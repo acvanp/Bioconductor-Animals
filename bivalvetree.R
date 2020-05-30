@@ -70,8 +70,9 @@ ggtree(musselTree,  layout='circular') + geom_tiplab(size=3, aes(angle=angle)) +
 
 tree <- groupClade(musselTree, .node = c(12,13,14,18))
 
-ggtree(tree, aes(color=group, linetype=group)) + 
+p = ggtree(tree, aes(color=group, linetype=group)) + 
   ggtitle("Phylogenetic Tree Based on Mollusk COI Sequences") +
+  #geom_text(aes(label = node)) + # run this line to identify nodes to rotate
   geom_tiplab(aes(subset=(group==1))) +
   geom_tiplab(aes(subset=(group==2))) +
   geom_tiplab(aes(subset=(group==3))) +
@@ -81,3 +82,5 @@ ggtree(tree, aes(color=group, linetype=group)) +
   guides(color = guide_legend(override.aes = list(linetype = c('solid','solid', 'solid', 'solid'))),
          linetype = FALSE)
 
+p
+rotate(p, 18)
