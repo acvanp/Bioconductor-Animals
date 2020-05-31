@@ -34,7 +34,8 @@ for(i in 1:length(species_list)){
   m = entrez_fetch(db="nuccore", id=m$ids, rettype="fasta")
   ll = append(ll, m)
 }
-
+setwd("C:\\Users\\Lenovo\\BioconductorAnimals")
+#write(ll, "mussels_ND1.fasta", sep="\n")
 write(ll, "mussels_COI.fasta", sep="\n")
 mussels_COI_seqinr_format <- read.fasta("mussels_COI.fasta")
 
