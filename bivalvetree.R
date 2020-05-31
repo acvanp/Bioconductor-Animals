@@ -23,22 +23,25 @@ species_list = c("Amblema plicata", "Cyrtonaias tampicoensis",
                     "Lampsilis cardium", "Margaritifera margaritifera",
                     "Ellipsaria lineolata", "Elliptio complanata",
                     "Megalonaias nervosa", "Crassostrea virginica",
-                    "Arctica islandica", # "Caenorhabditis elegans" , # nematode worm outgroup
+                    "Arctica islandica",  "Caenorhabditis elegans" , # nematode worm outgroup
                     "Conus ermineus", "Tridacna gigas")
 
 ll = c()
 for(i in 1:length(species_list)){
-  #t = paste(species_list[i], "[Organism] AND ND1[Gene]", sep = "")
-  t = paste(species_list[i], "[Organism] AND COI[Gene]", sep = "")
+  t = paste(species_list[i], "[Organism] AND ND1[Gene]", sep = "")
+  #t = paste(species_list[i], "[Organism] AND COI[Gene]", sep = "")
   m = entrez_search(db = "nuccore", term = t, retmax = 1)
   m = entrez_fetch(db="nuccore", id=m$ids, rettype="fasta")
   ll = append(ll, m)
 }
 setwd("C:\\Users\\Lenovo\\BioconductorAnimals")
-#write(ll, "mussels_ND1.fasta", sep="\n")
-write(ll, "mussels_COI.fasta", sep="\n")
+write(ll, "mussels_ND1.fasta", sep="\n")
+#write(ll, "mussels_COI.fasta", sep="\n")
+
+mussels_ND1_seqinr_format <- read.fasta("mussels_ND1.fasta")
 mussels_COI_seqinr_format <- read.fasta("mussels_COI.fasta")
 
+musselSeq <- readAAStringSet("mussels_ND1.fasta")
 musselSeq <- readAAStringSet("mussels_COI.fasta")
 musselAln <- msa(musselSeq)
 ## use default substitution matrix
@@ -47,7 +50,7 @@ musselAln
 
 musselAln2 <- msaConvert(musselAln, type="seqinr::alignment")
 
-d <- dist.alignment(musselAln2, "identity")
+d <- dist.alignment(musselAln2, "similarity")
 
 musselTree <- nj(d)
 
@@ -75,24 +78,28 @@ ggtree(musselTree,  layout='slanted',  branch.length="none") + geom_tiplab(size=
   coord_flip() + ggplot2::xlim(0, 10)
 
 
+tree <- musselTree
+
 tree <- groupClade(musselTree)
 
 tree <- groupClade(musselTree, .node = c(12,13,14,18)+1)
+#tree$edge.length[10:18] = -tree$edge.length[10:18]
 tree$edge.length[2:10] = -tree$edge.length[2:10]
 
 tree <- groupClade(musselTree, .node = c(12,13,14,18))
 
 p = ggtree(tree, aes(color=group, linetype=group)) + 
-  ggtitle("Unionid and Invertebrate Phylogenetic Tree with ND1 Sequences") +
+  ggtitle("Unionid and Invertebrate Phylogenetic Tree with COI Sequences") +
   #geom_text(aes(label = node)) + # run this line to identify nodes to rotate
   geom_tiplab(aes(subset=(group==1))) +
   geom_tiplab(aes(subset=(group==2))) +
   geom_tiplab(aes(subset=(group==3))) +
-  geom_tiplab(aes(subset=(group==4)), hjust = 1 ) + 
+  geom_tiplab(aes(subset=(group==4)), hjust = 1) +
+  #geom_tiplab(aes(subset=(group==5))) + 
   ggplot2::xlim(-1.3, 1.5) + 
   scale_color_manual(labels = c("Uniodae1", "Unioda", "Uniodae2", "Other Invertebrates"), 
-                     values = c("black", "purple", "navy", "magenta") ) +
-  guides(color = guide_legend(override.aes = list(linetype = c('solid','solid', 'solid', 'solid'))),
+                     values = c("black", "purple", "navy", "magenta", "orange") ) +
+  guides(color = guide_legend(override.aes = list(linetype = c('solid','solid', 'solid', "solid"))),
          linetype = FALSE)
 
 p
