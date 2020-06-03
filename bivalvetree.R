@@ -41,7 +41,7 @@ write(ll, "mussels_ND1.fasta", sep="\n")
 mussels_ND1_seqinr_format <- read.fasta("mussels_ND1.fasta")
 mussels_COI_seqinr_format <- read.fasta("mussels_COI.fasta")
 
-musselSeq <- readAAStringSet("mussels_ND1.fasta")
+#musselSeq <- readAAStringSet("mussels_ND1.fasta")
 musselSeq <- readAAStringSet("mussels_COI.fasta")
 musselAln <- msa(musselSeq)
 ## use default substitution matrix
@@ -97,7 +97,7 @@ p = ggtree(tree, aes(color=group, linetype=group)) +
   geom_tiplab(aes(subset=(group==4)), hjust = 1) +
   #geom_tiplab(aes(subset=(group==5))) + 
   ggplot2::xlim(-1.3, 1.5) + 
-  scale_color_manual(labels = c("Uniodae1", "Unioda", "Uniodae2", "Other Invertebrates"), 
+  scale_color_manual(labels = c("Unioda", "Uniodae1", "Uniodae2",  "Other Invertebrates"), 
                      values = c("black", "purple", "navy", "magenta", "orange") ) +
   guides(color = guide_legend(override.aes = list(linetype = c('solid','solid', 'solid', "solid"))),
          linetype = FALSE)
